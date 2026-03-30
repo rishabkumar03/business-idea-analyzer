@@ -1,4 +1,5 @@
-const ollama = require('ollama').default;
+const { Ollama } = require('ollama');
+const ollama = new Ollama();
 
 async function chatStream() {
     try {

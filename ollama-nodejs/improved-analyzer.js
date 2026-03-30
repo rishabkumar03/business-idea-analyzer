@@ -1,4 +1,6 @@
-const ollama = require('ollama').default;
+const { Ollama } = require('ollama');
+const ollama = new Ollama();
+
 const fs = require('fs');
 
 // --------- CONFIGURATION ---------
