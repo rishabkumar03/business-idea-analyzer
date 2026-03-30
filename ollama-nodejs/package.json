@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ollama": "^0.6.3"
+    "ollama": "^0.6.3",
+    "package.json": "^2.0.1"
   }
 }

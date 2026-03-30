@@ -6,14 +6,14 @@ const fs = require('fs');
 const CONFIG = {
     model: 'mistral',
 
-    // 2 minutes
-    timeout: 600000,
+    // 3 minutes
+    timeout: 180000,
     
-    // Retry 3 times
-    maxRetries: 3, 
+    // Retry 2 times
+    maxRetries: 2, 
 
-    // 3 seconds between retries
-    retryDelay: 3000,
+    // 5 seconds between retries
+    retryDelay: 5000,
     stream: true,
     options: {
 
@@ -26,11 +26,11 @@ const CONFIG = {
         // Standard vocabulary
         top_k: 40,
 
-        // Avoid repitition
+        // Avoid repetition
         repeat_penalty: 1.2,
 
-        // Large context window, it remembers the last 5-6 paragraphs.
-        num_ctx: 4096   
+        // Smaller context window, it generates faster response.
+        num_ctx: 2048   
     }
 }
 
@@ -73,13 +73,13 @@ ANALYSIS FRAMEWORK:
     
 6. EXECUTION RISKS
     - Technical/product risks
-    - Market/customer acquistion risks
+    - Market/customer acquisition risks
     - Financial/funding risks
     - Regulatory or legal risks
     (For each risk, suggest a mitigation strategy)
     
 7. GO-TO-MARKET STRATEGY
-    - First 3 customer acquistion channels
+    - First 3 customer acquisition channels
     - How to get first 10 customers
     - How to scale to 1,000 customers
     
@@ -126,7 +126,7 @@ Return ONLY valid JSON matching this schema:
     }, 
     "risks": [
         {
-            "category": "technincal/market/financial/regulatory",
+            "category": "technical/market/financial/regulatory",
             "risk": "specific risk",
             "severity": "low/medium/high",
             "mitigation": "specific strategy"
@@ -149,9 +149,9 @@ Return ONLY valid JSON matching this schema:
 
 QUALITY STANDARDS: 
 - Be specific: "SaaS subscription at $49/month" NOT "subscription model"
-- Use numbers: "$5B market growing at 15% annually" NOT "larget growing market"
+- Use numbers: "$5B market growing at 15% annually" NOT "largest growing market"
 - Name names: "Competing with Shopify and WooCommerce" NOT "established players"
-- Be actionable: "Start with Reddit ads in r/entreprenuers" NOT "use social media"
+- Be actionable: "Start with Reddit ads in r/entrepreneurs" NOT "use social media"
 - Be honest: If it's bad idea, say so clearly and explain why
 - Think 2026: Consider current economic conditions, AI trends, remote work, etc.
 
@@ -244,7 +244,7 @@ function identifyError(error) {
 
             case 'TIMEOUT_ERROR': 
                 console.log('Solution: ');
-                console.log('1. Wait 30-60 secounds and try again');
+                console.log('1. Wait 30-60 seconds and try again');
                 console.log('2. The model is loading for the first time');
                 console.log('3. Subsequent requests will be faster\n');
                 break;
@@ -253,7 +253,7 @@ function identifyError(error) {
                 console.log('Solution: ');
                 console.log(`1. Run: ollama pull ${CONFIG.model}`);
                 console.log('2. Wait for download to complete');
-                console.log('3. Try your analysis agian\n');
+                console.log('3. Try your analysis again\n');
                 break;
 
             case 'PARSE_ERROR': 
@@ -290,7 +290,7 @@ async function parseJSON(text) {
         // ^ means starting of string, and then any character except { and * represents as many characters as possible. It means from the start remove everything until { comes.
         .replace(/^[^{]*/, '')      
 
-        // removes anything after last } comees. (Here, $ means end of the string)
+        // removes anything after last } comes. (Here, $ means end of the string)
         .replace(/[^}]*$/, '')      
         .trim();
 
