@@ -12,11 +12,11 @@ const CONFIG = {
     timeout: 180000,
     
     // Retry 2 times
-    maxRetries: 2, 
+    maxRetries: 3, 
 
     // 5 seconds between retries
     retryDelay: 5000,
-    stream: true,
+    stream: false,
     options: {
 
         // Balanced - not too creative, not too rigid
@@ -32,7 +32,7 @@ const CONFIG = {
         repeat_penalty: 1.2,
 
         // Smaller context window, it generates faster response.
-        num_ctx: 2048   
+        num_ctx: 2048  
     }
 }
 
