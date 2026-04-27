@@ -1,0 +1,37 @@
+{
+  "idea": "Suggest me about the idea of not giving up",
+  "analyzedAt": "2026-04-26T15:57:20.896Z",
+  "analysis": {
+    "overview": {
+      "score": 1,
+      "marketSize": "nonexistent",
+      "competition": "non-existent",
+      "targetCustomer": "Entrepreneurs facing challenges or setbacks",
+      "mainRisk": "Lack of a unique value proposition and potential emotional attachment to the idea may lead to continued investment despite poor results",
+      "recommendation": "Modify",
+      "reasoning": "While the concept of 'not giving up' is inspiring, it lacks a clear market size and competitive landscape. To make this viable, it needs to be reframed as a service or product that offers tangible benefits beyond just motivation. For example, offering resilience training programs for entrepreneurs could provide a unique value proposition."
+    },
+    "market": null,
+    "competition": null,
+    "businessModel": null,
+    "risks": [
+      {
+        "risk": "Overcommitment and Burnout",
+        "severity": "Medium",
+        "mitigation": "Ensure regular breaks, maintain a healthy work-life balance, and prioritize self-care."
+      },
+      {
+        "risk": "Lack of Perspective",
+        "severity": "Low",
+        "mitigation": "Seek advice from mentors or peers, stay open to new ideas, and maintain a positive mindset."
+      },
+      {
+        "risk": "Potential for Stagnation",
+        "severity": "High (if not paired with continuous learning)",
+        "mitigation": "Continuously learn, adapt, and grow to avoid becoming complacent or stagnant."
+      }
+    ],
+    "analyzedAt": "2026-04-26T15:57:20.896Z",
+    "idea": "Suggest me about the idea of not giving up"
+  }
+}

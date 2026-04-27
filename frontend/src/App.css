@@ -8,7 +8,8 @@
 }
 
 :root {
-  --bg-page:       #111110;
+/* ------ ORIGINAL BLACK THEME ------ 
+  --bg-page:       #111110; 
   --bg-surface:    #1a1a18;
   --bg-card:       #1f1f1d;
   --bg-input:      #161614;
@@ -19,7 +20,35 @@
   --text-primary:   #f0ede6;
   --text-secondary: #9e9c96;
   --text-tertiary:  #5f5e5a;
-  --text-mono:      #b4b2a9;
+  --text-mono:      #b4b2a9; */
+
+/* ------- PINK THEME ------- 
+  --bg-page:       #F2C9DC; 
+  --bg-surface:    #FaFaF8;
+  --bg-card:       #FfFfFd;
+  --bg-input:      #F6F6F4;
+  --border:        rgba(64, 22, 37, 0.08);
+  --border-hover:  rgba(64, 22, 37, 0.16);
+  --border-focus:  rgba(64, 22, 37, 0.28);
+
+  --text-primary:   #8E58A6;
+  --text-secondary: #9A9C96;
+  --text-tertiary:  #585A5E;
+  --text-mono:      #b4b2E9; */
+
+/* ------- BLUE THEME ------- */  
+  --bg-page:       #0E1826; 
+  --bg-surface:    #0A0A08; 
+  --bg-card:       #000002; 
+  --bg-input:      #060604; 
+  --border:        rgba(1, 35, 64, 0.08);
+  --border-hover:  rgba(1, 35, 64, 0.16);
+  --border-focus:  rgba(1, 35, 64, 0.28);
+
+  --text-primary:   #2E4959;
+  --text-secondary: #999C96;
+  --text-tertiary:  #585A55;
+  --text-mono:      #687E8C;
 
   --teal:           #1D9E75;
   --teal-dim:       rgba(29,158,117,0.15);

@@ -6,12 +6,13 @@ const fs = require('fs');
 // --------- CONFIGURATION ---------
 
 const CONFIG = {
+    // swap to 'llama3' or 'gemma', if needed. These two are other models of ollama
     model: 'mistral',
 
     // 3 minutes
     timeout: 180000,
     
-    // Retry 2 times
+    // Retry 3 times
     maxRetries: 3, 
 
     // 5 seconds between retries

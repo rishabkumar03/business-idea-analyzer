@@ -8,14 +8,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// FIXED: Changed '/analyze' to '/api/analyze'
+// Main analysis functionality
 app.post('/api/analyze', async (req, res) => {
     const { idea } = req.body;
     
+    // Reject empty or too-short ideas
     if (!idea || idea.trim().length < 10) {
         return res.status(400).json({ 
             success: false,
-            error: 'Please provide a business idea (at least 10 characters)' 
+            error: 'Please provide a business idea (at least 10 characters)',
+            type: 'VALIDATION_ERROR'
         });
     }
 
@@ -23,6 +25,8 @@ app.post('/api/analyze', async (req, res) => {
         console.log(`\nAnalyzing: "${idea.substring(0, 50)}..."`);
         
         const analysis = await analyzeBusinessIdea(idea);
+
+        // saves JSON file to disk
         saveAnalysis(idea, analysis);
         
         res.json({ 
@@ -36,17 +40,20 @@ app.post('/api/analyze', async (req, res) => {
         res.status(500).json({ 
             success: false, 
             error: error.message,
+
+            // Parse error type to frontend
             type: error.type || 'UNKNOWN_ERROR'
         });
     }
 });
 
-// Health check endpoint
+// Health check endpoint: useful for checking server is alive or not
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    res.json({ status: 'ok', model: 'mistral', port: PORT, timestamp: new Date().toISOString() });
 });
 
-const PORT = 3001;
+// allowing override of env
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
     console.log('   BUSINESS IDEA ANALYZER: BACKEND API     ');
