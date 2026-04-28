@@ -338,8 +338,6 @@ async function analyzeBusinessIdea(idea) {
     }
 }
 
-// --------- PROGRESSIVE ANALYZER ---------
-
 // function displayAnalysis(analysis) {
 //     console.log("--------- ANALYSIS REPORT ---------");
 
