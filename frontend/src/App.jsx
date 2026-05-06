@@ -1,3 +1,4 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
@@ -588,7 +589,7 @@ function App() {
     addLog('Connecting to AI backend…', 'inf');
 
     try {
-      const response = await axios.post(`${API_BASE}/api/analyze`, { idea });
+      const response = await axios.post(`${API_URL}/api/analyze`, { idea: idea });
 
       if (response.data.success) {
         const { overview, market, competition, businessModel, risks } = response.data.analysis;

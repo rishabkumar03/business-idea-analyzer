@@ -1,0 +1,65 @@
+{
+  "idea": " I want to open a biryani stall near piska more, ranchi",
+  "analyzedAt": "2026-05-06T05:35:55.578Z",
+  "analysis": {
+    "overview": {
+      "score": 7,
+      "marketSize": "medium",
+      "competition": "medium",
+      "targetCustomer": "Local residents, office workers, students in the surrounding areas of Piska More, Ranchi",
+      "mainRisk": "High competition from existing biryani vendors and potential saturation of food stalls in the area",
+      "recommendation": "Modify",
+      "reasoning": "The medium market size indicates a decent demand for biryani, but the high competition may lead to difficulty in standing out. To succeed, it's recommended to modify the business strategy by offering unique twists on traditional recipes or focusing on exceptional customer service."
+    },
+    "market": {
+      "tamEstimate": "Approximately INR 50,000 - 70,000 per month based on local consumer spending and competition",
+      "growthRate": "1-2% annually due to increasing urbanization and foodie culture in Ranchi",
+      "keyTrends": [
+        "Increasing demand for authentic regional cuisine",
+        "Growing preference for street food experiences",
+        "Rising number of young professionals in the area"
+      ],
+      "targetDemographics": "Age: 18-40, Income: Middle to upper class, Location: Residents and office workers around Piska More"
+    },
+    "competition": {
+      "directCompetitors": [
+        "Biryani House Near Piska More",
+        "Royal Biryani Point",
+        "Sultan of Biryanis"
+      ],
+      "indirectCompetitors": [
+        "Fast Food Joints in Ranchi",
+        "Restaurants offering Indian Cuisine"
+      ],
+      "differentiation": "Offering a unique blend of traditional and modern biryani recipes, using locally sourced ingredients to support local farmers.",
+      "barriers": "High rental costs for prime locations, obtaining necessary permits and licenses, intense competition in the food industry"
+    },
+    "businessModel": {
+      "revenueStreams": [
+        "Daily sales of biryani and other accompaniments"
+      ],
+      "pricing": "Rs. X per plate (to be determined based on local market prices)",
+      "scalability": "Medium",
+      "profitabilityTimeline": "2-3 months (assuming steady customer base)"
+    },
+    "risks": [
+      {
+        "risk": "Competition from existing biryani stalls in the area",
+        "severity": "medium",
+        "mitigation": "Differentiate your offerings, such as unique recipes or better quality ingredients, to attract customers."
+      },
+      {
+        "risk": "Regulatory compliance and permits for food stalls in Ranchi",
+        "severity": "high",
+        "mitigation": "Research and comply with all local regulations regarding food preparation, health standards, and business licensing."
+      },
+      {
+        "risk": "Footfall and visibility near Piska More, Ranchi",
+        "severity": "medium",
+        "mitigation": "Ensure your location is easily accessible and has good visibility to attract customers. Consider promotions or partnerships with nearby businesses."
+      }
+    ],
+    "analyzedAt": "2026-05-06T05:35:55.578Z",
+    "idea": " I want to open a biryani stall near piska more, ranchi"
+  }
+}
