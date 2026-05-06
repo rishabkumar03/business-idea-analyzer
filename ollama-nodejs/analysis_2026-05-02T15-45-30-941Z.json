@@ -1,0 +1,65 @@
+{
+  "idea": "i want to open pig farm in ranchi so what can i do for this",
+  "analyzedAt": "2026-05-02T15:45:30.941Z",
+  "analysis": {
+    "overview": {
+      "score": "6.5",
+      "marketSize": "medium",
+      "competition": "medium",
+      "targetCustomer": "Local meat processors, restaurants, supermarkets, and individual consumers in Ranchi and surrounding areas.",
+      "mainRisk": "High vulnerability to disease outbreaks and fluctuating feed costs due to dependence on local resources.",
+      "recommendation": "Modify",
+      "reasoning": "The medium market size indicates a potential for profit, but the competition level is average. To mitigate high risks associated with disease outbreaks and feed cost volatility, consider implementing strict biosecurity measures and diversifying your feed sources."
+    },
+    "market": {
+      "tamEstimate": "The total addressable market (TAM) for a pig farm in Ranchi can be estimated to range from INR 50 lakhs to INR 1 crore annually. This estimate is based on the potential demand for pork and related products, considering factors like population size, consumption patterns, and existing supply-demand dynamics.",
+      "growthRate": "The pig farming market in Ranchi has a growth rate of approximately 10% per year over the next five years. This is due to increasing urbanization and changing dietary preferences towards non-vegetarian food.",
+      "keyTrends": [
+        "Increasing demand for organic and free-range pork",
+        "Government initiatives promoting animal husbandry and agricultural development",
+        "Rising investments in modern farming technologies and infrastructure"
+      ],
+      "targetDemographics": "The primary target demographic would be urban households with a disposable income of INR 50,000 or more per month. The location-specific market includes residents within Ranchi city and its suburbs."
+    },
+    "competition": {
+      "directCompetitors": [
+        "Pig Farm A Ranchi",
+        "Ranchi Swine Farmers Union",
+        "Big Pigs Farms, Ranchi"
+      ],
+      "indirectCompetitors": [
+        "Local poultry farms",
+        "Dairy farms in the region"
+      ],
+      "differentiation": "Specialization in organic pig farming or focus on specific breeds, implementation of sustainable and humane practices, offering value-added products like cured meats",
+      "barriers": "High initial investment for infrastructure and livestock, regulatory compliance costs, market competition, risk of disease outbreaks"
+    },
+    "businessModel": {
+      "revenueStreams": [
+        "Sale of Pigs (Live or Slaughtered), Sow Services, and Pig Feed Sales"
+      ],
+      "pricing": "Varies based on factors like weight, breed, and quality. Example pricing can be Rs.20,000 - Rs.100,000 for a mature pig.",
+      "scalability": "Medium (Expansion possible by increasing the number of pens or land area)",
+      "profitabilityTimeline": "Typically 6-18 months after initial investment and operation stabilization"
+    },
+    "risks": [
+      {
+        "risk": "Market Volatility and Competition",
+        "severity": "medium",
+        "mitigation": "Research local market trends, understand consumer preferences, diversify product offerings, and establish competitive pricing strategies."
+      },
+      {
+        "risk": "Regulatory Compliance",
+        "severity": "high",
+        "mitigation": "Familiarize yourself with local laws and regulations regarding pig farming in Ranchi. Obtain necessary permits, licenses, and certifications."
+      },
+      {
+        "risk": "Disease Outbreaks and Animal Health Management",
+        "severity": "high",
+        "mitigation": "Implement strict biosecurity measures to prevent the introduction of diseases. Develop a vaccination program with veterinary guidance, monitor animal health regularly."
+      }
+    ],
+    "analyzedAt": "2026-05-02T15:45:30.941Z",
+    "idea": "i want to open pig farm in ranchi so what can i do for this"
+  }
+}

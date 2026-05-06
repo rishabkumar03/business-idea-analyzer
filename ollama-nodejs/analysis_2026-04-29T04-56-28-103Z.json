@@ -1,0 +1,37 @@
+{
+  "idea": "i want to open university in hazribag jharkhand what can i do ",
+  "analyzedAt": "2026-04-29T04:56:28.103Z",
+  "analysis": {
+    "overview": {
+      "score": 4,
+      "marketSize": "medium",
+      "competition": "large",
+      "targetCustomer": "Young adults aged 18-35 in Hazibag Jharkhand seeking higher education opportunities",
+      "mainRisk": "High initial investment and competition from existing universities and online learning platforms",
+      "recommendation": "Modify",
+      "reasoning": "The market size is medium, indicating a demand for educational services in Hazibag Jharkhand. However, the high level of competition poses significant risks due to established universities and growing online learning platforms. To mitigate this risk, consider specializing in niche areas such as vocational training or adult education, offering scholarships, or partnering with local businesses for apprenticeships."
+    },
+    "market": null,
+    "competition": null,
+    "businessModel": null,
+    "risks": [
+      {
+        "risk": "Obtaining necessary permits and approvals from local government authorities in Hazribag, Jharkhand.",
+        "severity": "high",
+        "mitigation": "Research the specific requirements for establishing an educational institution in Jharkhand, gather all required documents, and follow up regularly with the relevant departments."
+      },
+      {
+        "risk": "Finding a suitable location within Hazribag that meets the necessary criteria for setting up a university.",
+        "severity": "medium",
+        "mitigation": "Consider factors such as accessibility, size, and zoning regulations when searching for a property. It may be beneficial to work with a real estate agent or local consultant who is familiar with the area."
+      },
+      {
+        "risk": "Attracting students and faculty members in a competitive educational market.",
+        "severity": "medium",
+        "mitigation": "Develop a unique curriculum, offer scholarships or financial aid to attract students, network with local schools and businesses, and leverage digital marketing strategies to promote the university."
+      }
+    ],
+    "analyzedAt": "2026-04-29T04:56:28.102Z",
+    "idea": "i want to open university in hazribag jharkhand what can i do "
+  }
+}

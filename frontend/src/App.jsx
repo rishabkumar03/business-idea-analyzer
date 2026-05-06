@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import './App.css';
@@ -9,13 +9,12 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 // ─── PDF GENERATOR ────────────────────────────────────────────────────────────
 function generatePDF(idea, analysis) {
   const doc      = new jsPDF({ unit: 'mm', format: 'a4' });
-  const W        = doc.internal.pageSize.getWidth();   // 210
-  const H        = doc.internal.pageSize.getHeight();  // 297
+  const W        = doc.internal.pageSize.getWidth();
+  const H        = doc.internal.pageSize.getHeight();
   const MARGIN   = 20;
   const COL      = W - MARGIN * 2;
   let   y        = 0;
 
-  // ── Colour palette ──────────────────────────────────────────────────────────
   const C = {
     black:     [15,  15,  14],
     white:     [255, 255, 255],
@@ -37,7 +36,6 @@ function generatePDF(idea, analysis) {
     pageBg:    [252, 251, 248],
   };
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
   const setFill   = (rgb) => doc.setFillColor(...rgb);
   const setStroke = (rgb) => doc.setDrawColor(...rgb);
   const setColor  = (rgb) => doc.setTextColor(...rgb);
@@ -46,14 +44,12 @@ function generatePDF(idea, analysis) {
     doc.setFontSize(size);
   };
 
-  // Wrap + write text, return new y
   const writeText = (text, x, startY, maxW, lineH = 5) => {
     const lines = doc.splitTextToSize(String(text || ''), maxW);
     doc.text(lines, x, startY);
     return startY + lines.length * lineH;
   };
 
-  // Check if we need a new page
   const checkPage = (needed = 20) => {
     if (y + needed > H - 20) {
       doc.addPage();
@@ -63,7 +59,6 @@ function generatePDF(idea, analysis) {
     }
   };
 
-  // Horizontal rule
   const rule = (color = C.grey4, weight = 0.3) => {
     setStroke(color);
     doc.setLineWidth(weight);
@@ -71,7 +66,6 @@ function generatePDF(idea, analysis) {
     y += 4;
   };
 
-  // Section heading pill
   const sectionHead = (label, accentColor = C.teal) => {
     checkPage(16);
     setFill(accentColor);
@@ -82,7 +76,6 @@ function generatePDF(idea, analysis) {
     y += 13;
   };
 
-  // KV pair
   const kv = (label, value, indent = 0) => {
     checkPage(8);
     setFont('bold', 9);
@@ -95,7 +88,6 @@ function generatePDF(idea, analysis) {
     y = Math.max(y + 5, newY);
   };
 
-  // Tag / pill chip
   const chip = (text, bgColor, textColor, startX, chipY) => {
     setFont('normal', 8);
     const tw  = doc.getTextWidth(text);
@@ -109,7 +101,6 @@ function generatePDF(idea, analysis) {
     return startX + pw + 3;
   };
 
-  // Row of chips
   const chipRow = (items, bgColor, textColor) => {
     checkPage(10);
     let cx = MARGIN;
@@ -121,31 +112,19 @@ function generatePDF(idea, analysis) {
     y += 8;
   };
 
-  // ── PAGE 1: Cover ────────────────────────────────────────────────────────────
-  // Background
   setFill(C.grey1);
   doc.rect(0, 0, W, H, 'F');
-
-  // Top accent bar
   setFill(C.teal);
   doc.rect(0, 0, W, 3, 'F');
-
-  // Brand label
   setFont('normal', 8);
   setColor(C.grey3);
   doc.text('AI-POWERED STARTUP ANALYSIS', MARGIN, 22);
-
-  // Title
   setFont('bold', 28);
   setColor(C.white);
   doc.text('Business Idea', MARGIN, 48);
   doc.text('Analyzer', MARGIN, 62);
-
-  // Teal underline accent
   setFill(C.teal);
   doc.rect(MARGIN, 66, 40, 2, 'F');
-
-  // Idea box
   setFill([25, 25, 23]);
   doc.roundedRect(MARGIN, 80, COL, 36, 4, 4, 'F');
   setFont('bold', 8);
@@ -156,7 +135,6 @@ function generatePDF(idea, analysis) {
   const ideaLines = doc.splitTextToSize(idea, COL - 16);
   doc.text(ideaLines.slice(0, 3), MARGIN + 8, 99);
 
-  // Score + Rec side by side
   const score = analysis.overview?.score || 0;
   const rec   = (analysis.overview?.recommendation || 'proceed').toLowerCase();
   const recColors = {
@@ -166,7 +144,6 @@ function generatePDF(idea, analysis) {
   };
   const recC = recColors[rec] || recColors.proceed;
 
-  // Score circle
   setFill(C.teal);
   doc.circle(MARGIN + 20, 145, 18, 'F');
   setFont('bold', 22);
@@ -177,8 +154,6 @@ function generatePDF(idea, analysis) {
   setFont('bold', 8);
   setColor(C.grey3);
   doc.text('VIABILITY SCORE', MARGIN + 20, 167, { align: 'center' });
-
-  // Recommendation badge
   setFill(recC.bg);
   doc.roundedRect(MARGIN + 50, 133, 50, 14, 3, 3, 'F');
   setFont('bold', 12);
@@ -188,7 +163,6 @@ function generatePDF(idea, analysis) {
   setColor(C.grey3);
   doc.text('RECOMMENDATION', MARGIN + 75, 153, { align: 'center' });
 
-  // Quick stats row
   const stats = [
     { label: 'MARKET SIZE',  value: (analysis.overview?.marketSize  || '—').toUpperCase() },
     { label: 'COMPETITION',  value: (analysis.overview?.competition || '—').toUpperCase() },
@@ -205,18 +179,12 @@ function generatePDF(idea, analysis) {
     setColor(C.white);
     doc.text(s.value, sx + 27, 191, { align: 'center' });
   });
-
-  // Footer on cover
   setFont('normal', 7);
   setColor(C.grey3);
   doc.text(`Generated ${new Date().toLocaleString()} · Business Idea Analyzer`, MARGIN, H - 12);
 
-  // ── PAGE 2+: Report ──────────────────────────────────────────────────────────
-  doc.addPage();
   setFill(C.pageBg);
   doc.rect(0, 0, W, H, 'F');
-
-  // Top bar
   setFill(C.grey1);
   doc.rect(0, 0, W, 14, 'F');
   setFont('bold', 8);
@@ -227,29 +195,24 @@ function generatePDF(idea, analysis) {
   doc.text(new Date().toLocaleDateString(), W - MARGIN, 9, { align: 'right' });
 
   y = 24;
-
-  // ── OVERVIEW SECTION ────────────────────────────────────────────────────────
   sectionHead('01  Overview & Reasoning', C.grey1);
-
   const ov = analysis.overview || {};
   setFont('normal', 9);
   setColor(C.grey1);
   y = writeText(ov.reasoning || '—', MARGIN, y, COL, 5.5);
   y += 4;
-
   rule(C.grey4);
   kv('Target Customer:  ', ov.targetCustomer);
-  kv('Main Risk:  ',        ov.mainRisk);
+  kv('Main Risk:  ', ov.mainRisk);
   y += 4;
 
-  // ── MARKET SECTION ───────────────────────────────────────────────────────────
   if (analysis.market) {
     checkPage(20);
     sectionHead('02  Market Analysis', C.blue);
     const m = analysis.market;
-    kv('TAM Estimate:  ',    m.tamEstimate);
-    kv('Growth Rate:  ',     m.growthRate);
-    kv('Demographics:  ',    m.targetDemographics);
+    kv('TAM Estimate:  ', m.tamEstimate);
+    kv('Growth Rate:  ', m.growthRate);
+    kv('Demographics:  ', m.targetDemographics);
     if (m.keyTrends?.length) {
       checkPage(12);
       setFont('bold', 9);
@@ -261,7 +224,6 @@ function generatePDF(idea, analysis) {
     y += 2;
   }
 
-  // ── COMPETITION SECTION ──────────────────────────────────────────────────────
   if (analysis.competition) {
     checkPage(20);
     sectionHead('03  Competition', C.coral);
@@ -282,12 +244,11 @@ function generatePDF(idea, analysis) {
       y += 6;
       chipRow(c.indirectCompetitors, C.grey5, C.grey2);
     }
-    kv('Your Edge:  ',   c.differentiation);
-    kv('Barriers:  ',    c.barriers);
+    kv('Your Edge:  ', c.differentiation);
+    kv('Barriers:  ', c.barriers);
     y += 2;
   }
 
-  // ── BUSINESS MODEL SECTION ───────────────────────────────────────────────────
   if (analysis.businessModel) {
     checkPage(20);
     sectionHead('04  Business Model', C.teal);
@@ -300,54 +261,42 @@ function generatePDF(idea, analysis) {
       y += 6;
       chipRow(b.revenueStreams, C.tealLight, C.teal);
     }
-    kv('Pricing:  ',          b.pricing);
-    kv('Scalability:  ',      b.scalability);
-    kv('Profitability:  ',    b.profitabilityTimeline);
+    kv('Pricing:  ', b.pricing);
+    kv('Scalability:  ', b.scalability);
+    kv('Profitability:  ', b.profitabilityTimeline);
     y += 2;
   }
 
-  // ── RISKS SECTION ────────────────────────────────────────────────────────────
   if (analysis.risks?.length) {
     checkPage(20);
     sectionHead('05  Risk Assessment', C.red);
-
     const sevColor = {
       low:    { bg: [220, 240, 210], text: [60, 110, 30]  },
       medium: { bg: C.amberLight,   text: C.amber         },
       high:   { bg: C.redLight,     text: C.red           },
     };
     const sevBar = { low: 0.3, medium: 0.65, high: 1.0 };
-
     analysis.risks.forEach((r, i) => {
       checkPage(24);
       const sev  = (r.severity || 'medium').toLowerCase();
       const sc   = sevColor[sev] || sevColor.medium;
-
-      // Risk number + name
       setFont('bold', 9);
       setColor(C.grey1);
       doc.text(`${i + 1}.`, MARGIN, y);
       setFont('bold', 9);
       const nameY = writeText(r.risk, MARGIN + 6, y, COL - 50, 5);
-
-      // Severity badge
       setFill(sc.bg);
       doc.roundedRect(W - MARGIN - 28, y - 4, 28, 6, 2, 2, 'F');
       setFont('bold', 7);
       setColor(sc.text);
       doc.text(sev.toUpperCase(), W - MARGIN - 14, y, { align: 'center' });
-
       y = Math.max(nameY, y + 5) + 1;
-
-      // Severity bar
       const barW = COL * 0.5;
       setFill(C.grey4);
       doc.roundedRect(MARGIN + 6, y, barW, 2.5, 1, 1, 'F');
       setFill(sc.text);
       doc.roundedRect(MARGIN + 6, y, barW * (sevBar[sev] || 0.5), 2.5, 1, 1, 'F');
       y += 6;
-
-      // Mitigation
       setFont('bold', 8);
       setColor(C.grey3);
       doc.text('MITIGATION  ', MARGIN + 6, y);
@@ -356,12 +305,10 @@ function generatePDF(idea, analysis) {
       const mitX = MARGIN + 6 + doc.getTextWidth('MITIGATION  ');
       y = writeText(r.mitigation, mitX, y, COL - mitX + MARGIN, 5);
       y += 5;
-
       if (i < analysis.risks.length - 1) rule(C.grey4, 0.2);
     });
   }
 
-  // ── FOOTER on last page ──────────────────────────────────────────────────────
   checkPage(0);
   setFill(C.grey1);
   doc.rect(0, H - 16, W, 16, 'F');
@@ -370,14 +317,38 @@ function generatePDF(idea, analysis) {
   doc.text('Generated by Business Idea Analyzer · Powered by Ollama / Mistral', MARGIN, H - 7);
   doc.text(`Page ${doc.internal.getNumberOfPages()}`, W - MARGIN, H - 7, { align: 'right' });
 
-  // ── Save ─────────────────────────────────────────────────────────────────────
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   doc.save(`business-analysis-${timestamp}.pdf`);
 }
 
+// ─── ANIMATED COUNTER ────────────────────────────────────────────────────────
+function AnimatedCounter({ target, duration = 1200 }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(Math.floor(start));
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration]);
+  return <>{count}</>;
+}
+
 // ─── PHASE PILL ───────────────────────────────────────────────────────────────
-function PhasePill({ label, state }) {
-  return <span className={`phase-pill ${state || 'idle'}`}>{label}</span>;
+function PhasePill({ label, state, index }) {
+  const icons = { idle: '○', running: '◉', done: '✓', skipped: '—' };
+  return (
+    <span
+      className={`phase-pill ${state || 'idle'}`}
+      style={{ animationDelay: `${index * 80}ms` }}
+    >
+      <span className="phase-icon">{icons[state] || '○'}</span>
+      {label}
+    </span>
+  );
 }
 
 // ─── SCORE RING ───────────────────────────────────────────────────────────────
@@ -386,6 +357,12 @@ function ScoreRing({ score }) {
   const circ   = 2 * Math.PI * r;
   const offset = circ - (circ * score) / 10;
   const color  = score >= 7 ? '#1D9E75' : score >= 5 ? '#BA7517' : '#E24B4A';
+  const [animated, setAnimated] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(false), 50);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <div className="score-ring-wrap">
       <svg width="72" height="72" viewBox="0 0 72 72">
@@ -393,12 +370,20 @@ function ScoreRing({ score }) {
         <circle
           cx="36" cy="36" r={r} fill="none"
           stroke={color} strokeWidth="6" strokeLinecap="round"
-          strokeDasharray={circ} strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 0.8s ease', transform: 'rotate(-90deg)', transformOrigin: 'center' }}
+          strokeDasharray={circ}
+          strokeDashoffset={animated ? circ : offset}
+          style={{
+            transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34,1.56,0.64,1)',
+            transform: 'rotate(-90deg)',
+            transformOrigin: 'center',
+          }}
         />
+        <circle cx="36" cy="36" r="22" fill={`${color}18`} />
       </svg>
       <div className="score-ring-inner">
-        <span className="score-num" style={{ color }}>{score}</span>
+        <span className="score-num" style={{ color }}>
+          <AnimatedCounter target={score} duration={1000} />
+        </span>
         <span className="score-denom">/ 10</span>
       </div>
     </div>
@@ -406,21 +391,55 @@ function ScoreRing({ score }) {
 }
 
 // ─── TAG ──────────────────────────────────────────────────────────────────────
-function Tag({ children, variant = 'default' }) {
-  return <span className={`tag tag-${variant}`}>{children}</span>;
+function Tag({ children, variant = 'default', delay = 0 }) {
+  return (
+    <span
+      className={`tag tag-${variant} tag-animate`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </span>
+  );
 }
 
 // ─── SEVERITY BADGE ───────────────────────────────────────────────────────────
 function SeverityBadge({ level }) {
   const s = (level || 'medium').toLowerCase();
-  return <span className={`severity-badge sev-${s}`}>{s}</span>;
+  const pulse = s === 'high';
+  return (
+    <span className={`severity-badge sev-${s} ${pulse ? 'sev-pulse' : ''}`}>
+      {s === 'high' ? '⚠ HIGH' : s === 'low' ? '✓ LOW' : '~ MED'}
+    </span>
+  );
 }
 
 // ─── SECTION CARD ─────────────────────────────────────────────────────────────
-function SectionCard({ title, children }) {
+function SectionCard({ title, children, accent, delay = 0 }) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
   return (
-    <div className="section-card">
-      <div className="section-title">{title}</div>
+    <div
+      ref={ref}
+      className={`section-card ${visible ? 'card-visible' : ''}`}
+      style={{
+        '--accent': accent,
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      <div className="section-title">
+        {accent && <span className="section-accent-dot" style={{ background: accent }} />}
+        {title}
+      </div>
       {children}
     </div>
   );
@@ -436,6 +455,97 @@ function KVRow({ label, value }) {
   );
 }
 
+// ─── RISK METER ───────────────────────────────────────────────────────────────
+function RiskMeter({ severity }) {
+  const sevPct   = { low: 30, medium: 65, high: 100 }[(severity || 'medium').toLowerCase()] || 65;
+  const sevColor = { low: '#7ab83a', medium: '#BA7517', high: '#E24B4A' }[(severity || 'medium').toLowerCase()] || '#BA7517';
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setWidth(sevPct), 200);
+    return () => clearTimeout(t);
+  }, [sevPct]);
+
+  return (
+    <div className="risk-bar-bg">
+      <div
+        className="risk-bar-fill"
+        style={{
+          width: `${width}%`,
+          background: `linear-gradient(90deg, ${sevColor}99, ${sevColor})`,
+          transition: 'width 1s cubic-bezier(0.34,1.56,0.64,1)',
+          boxShadow: `0 0 8px ${sevColor}66`,
+        }}
+      />
+    </div>
+  );
+}
+
+// ─── FLOATING PARTICLES ───────────────────────────────────────────────────────
+function Particles() {
+  return (
+    <div className="particles" aria-hidden="true">
+      {Array.from({ length: 20 }).map((_, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            left: `${Math.random() * 100}%`,
+            animationDuration: `${8 + Math.random() * 12}s`,
+            animationDelay: `${Math.random() * 8}s`,
+            width: `${2 + Math.random() * 3}px`,
+            height: `${2 + Math.random() * 3}px`,
+            opacity: 0.15 + Math.random() * 0.2,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── TYPING PLACEHOLDER ───────────────────────────────────────────────────────
+const PLACEHOLDERS = [
+  'An app that connects local farmers to urban restaurants…',
+  'A subscription box for rare teas from around the world…',
+  'An AI tutor for competitive coding interviews…',
+  'A marketplace for pre-owned luxury furniture…',
+  'A mobile gym that comes to your neighbourhood…',
+];
+
+function useTypingPlaceholder() {
+  const [text, setText] = useState('');
+  const [pIdx, setPIdx] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    const phrase = PLACEHOLDERS[pIdx];
+    if (paused) {
+      const t = setTimeout(() => setDeleting(true), 2000);
+      return () => clearTimeout(t);
+    }
+    if (!deleting) {
+      if (text.length < phrase.length) {
+        const t = setTimeout(() => setText(phrase.slice(0, text.length + 1)), 45);
+        return () => clearTimeout(t);
+      } else {
+        setPaused(true);
+      }
+    } else {
+      if (text.length > 0) {
+        const t = setTimeout(() => setText(text.slice(0, -1)), 22);
+        return () => clearTimeout(t);
+      } else {
+        setDeleting(false);
+        setPaused(false);
+        setPIdx((pIdx + 1) % PLACEHOLDERS.length);
+      }
+    }
+  }, [text, deleting, paused, pIdx]);
+
+  return text + '|';
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 function App() {
   const [idea, setIdea]         = useState('');
@@ -444,28 +554,38 @@ function App() {
   const [error, setError]       = useState(null);
   const [logs, setLogs]         = useState([]);
   const [phases, setPhases]     = useState({ p1: 'idle', p2: 'idle', p3: 'idle', p4: 'idle', p5: 'idle' });
-  const logRef = useRef(null);
+  const [charCount, setCharCount] = useState(0);
+  const logRef  = useRef(null);
+  const inputRef = useRef(null);
+  const placeholder = useTypingPlaceholder();
 
   useEffect(() => {
     if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight;
   }, [logs]);
 
-  const addLog  = (msg, type = 'inf') => setLogs(prev => [...prev, { msg, type, id: Date.now() + Math.random() }]);
-  const setPhase = (key, state)       => setPhases(prev => ({ ...prev, [key]: state }));
+  const addLog  = (msg, type = 'inf') =>
+    setLogs(prev => [...prev, { msg, type, id: Date.now() + Math.random() }]);
+  const setPhase = (key, state) =>
+    setPhases(prev => ({ ...prev, [key]: state }));
+
+  const handleIdeaChange = (e) => {
+    setIdea(e.target.value);
+    setCharCount(e.target.value.length);
+  };
 
   // ─── ANALYZE ────────────────────────────────────────────────────────────────
-  const handleAnalyze = async () => {
+  const handleAnalyze = useCallback(async () => {
     if (idea.trim().length < 10) {
       setError({ title: 'Idea too short', fix: 'Please enter at least 10 characters.' });
+      inputRef.current?.focus();
       return;
     }
-
     setLoading(true);
     setError(null);
     setAnalysis(null);
     setLogs([]);
     setPhases({ p1: 'running', p2: 'running', p3: 'running', p4: 'running', p5: 'running' });
-    addLog('Sending idea to backend...', 'inf');
+    addLog('Connecting to AI backend…', 'inf');
 
     try {
       const response = await axios.post(`${API_BASE}/api/analyze`, { idea });
@@ -484,7 +604,7 @@ function App() {
         if (competition)   addLog(`Competitors: ${(competition.directCompetitors || []).slice(0, 2).join(', ')}`, 'ok');
         if (businessModel) addLog(`Revenue: ${(businessModel.revenueStreams || []).join(', ')}`, 'ok');
         if (risks)         addLog(`Top risk: ${risks[0]?.risk}`, 'ok');
-        addLog('Analysis complete! Click below to download your PDF report.', 'ok');
+        addLog('Analysis complete ✓  Download your PDF below.', 'ok');
 
         setAnalysis(response.data.analysis);
       } else {
@@ -504,7 +624,7 @@ function App() {
     }
 
     setLoading(false);
-  };
+  }, [idea]);
 
   // ─── DERIVED ─────────────────────────────────────────────────────────────────
   const overview    = analysis?.overview;
@@ -514,47 +634,78 @@ function App() {
   const risks       = analysis?.risks;
 
   const recClass = { proceed: 'rec-proceed', modify: 'rec-modify', abandon: 'rec-abandon' };
-  const recIcon  = { proceed: '↑', modify: '~', abandon: '✕' };
+  const recIcon  = { proceed: '↑', modify: '⇄', abandon: '✕' };
+  const recLabel = { proceed: 'Proceed', modify: 'Modify', abandon: 'Abandon' };
 
   // ─── RENDER ──────────────────────────────────────────────────────────────────
   return (
     <div className="app">
+      <Particles />
+
+      {/* Ambient glow orbs */}
+      <div className="orb orb-1" aria-hidden="true" />
+      <div className="orb orb-2" aria-hidden="true" />
+
       <div className="container">
 
-        {/* Header */}
+        {/* ── Header ── */}
         <div className="header">
           <div className="header-meta">
-            <div className="status-dot" />
-            <span className="header-label">Backend · localhost:3001 · mistral</span>
+            <span className="status-dot" />
+            <span className="header-label">mistral · localhost:3001</span>
+            <span className="header-sep">·</span>
+            <span className="header-label header-version">v2.0</span>
           </div>
-          <h1>Business Idea Analyzer</h1>
-          <p>Progressive AI analysis — market, competition, business model, risks</p>
+          <h1 className="header-title">
+            <span className="title-glow">Business Idea</span>
+            <span className="title-outline"> Analyzer</span>
+          </h1>
+          <p className="header-sub">
+            Progressive AI analysis — market, competition, business model &amp; risks
+          </p>
         </div>
 
-        {/* Input */}
+        {/* ── Input ── */}
         <div className="input-section">
-          <div className="input-row">
+          <div className={`input-wrapper ${loading ? 'input-loading' : ''} ${idea.length > 0 ? 'input-filled' : ''}`}>
             <textarea
+              ref={inputRef}
               value={idea}
-              onChange={e => setIdea(e.target.value)}
+              onChange={handleIdeaChange}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleAnalyze()}
-              placeholder="Describe your business idea... (e.g. 'A mobile app that helps people find pet-friendly restaurants')"
-              rows={2}
+              placeholder={placeholder}
+              rows={3}
               disabled={loading}
+              maxLength={500}
+              className="idea-input"
             />
-            <button
-              className="analyze-btn"
-              onClick={handleAnalyze}
-              disabled={loading || idea.trim().length < 10}
-            >
-              {loading
-                ? <><span className="btn-spinner" /> Analyzing</>
-                : 'Analyze →'}
-            </button>
+            <div className="input-footer">
+              <span className={`char-count ${charCount > 450 ? 'char-warn' : ''}`}>
+                {charCount} / 500
+              </span>
+              <button
+                className={`analyze-btn ${loading ? 'btn-loading' : ''}`}
+                onClick={handleAnalyze}
+                disabled={loading || idea.trim().length < 10}
+              >
+                {loading ? (
+                  <>
+                    <span className="btn-spinner" />
+                    <span>Analyzing…</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="btn-icon">◈</span>
+                    <span>Analyze</span>
+                    <span className="btn-arrow">→</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Phase Pills */}
+        {/* ── Phase Pills ── */}
         <div className="phase-bar">
           {[
             { key: 'p1', label: '01 overview' },
@@ -562,64 +713,84 @@ function App() {
             { key: 'p3', label: '03 competition' },
             { key: 'p4', label: '04 business model' },
             { key: 'p5', label: '05 risks' },
-          ].map(p => <PhasePill key={p.key} label={p.label} state={phases[p.key]} />)}
+          ].map((p, i) => (
+            <PhasePill key={p.key} label={p.label} state={phases[p.key]} index={i} />
+          ))}
         </div>
 
-        {/* Log Box */}
+        {/* ── Log Box ── */}
         <div className="log-box" ref={logRef}>
-          {logs.length === 0
-            ? <span className="log-dim">Enter an idea and click Analyze to begin...</span>
-            : logs.map(l => (
-                <span key={l.id} className={`log-${l.type}`}>{'>'} {l.msg}</span>
-              ))
-          }
+          {logs.length === 0 ? (
+            <span className="log-dim">
+              <span className="log-cursor">_</span> Ready · Enter your idea to begin…
+            </span>
+          ) : (
+            logs.map((l, i) => (
+              <span
+                key={l.id}
+                className={`log-${l.type} log-line`}
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <span className="log-prompt">›</span> {l.msg}
+              </span>
+            ))
+          )}
         </div>
 
-        {/* Error */}
+        {/* ── Error ── */}
         {error && (
-          <div className="error-box">
-            <div className="error-title">{error.title}</div>
-            {error.fix && <div className="error-fix">Fix → {error.fix}</div>}
+          <div className="error-box error-animate">
+            <div className="error-icon">⚠</div>
+            <div>
+              <div className="error-title">{error.title}</div>
+              {error.fix && <div className="error-fix">Fix → {error.fix}</div>}
+            </div>
           </div>
         )}
 
-        {/* Results */}
+        {/* ── Results ── */}
         {overview && (
-          <div className="results">
+          <div className="results results-animate">
 
             {/* Metric Cards */}
             <div className="metric-grid">
-              <div className="metric-card flex-center">
+              <div className="metric-card metric-card--score">
                 <ScoreRing score={overview.score} />
-                <div>
-                  <div className="metric-label">Viability</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>
-                    {overview.score >= 7 ? 'Strong' : overview.score >= 5 ? 'Moderate' : 'Weak'}
+                <div className="metric-card-body">
+                  <div className="metric-label">Viability Score</div>
+                  <div className="metric-strength">
+                    {overview.score >= 7 ? '🟢 Strong' : overview.score >= 5 ? '🟡 Moderate' : '🔴 Weak'}
                   </div>
                 </div>
               </div>
 
-              <div className="metric-card">
-                <div className="metric-label">Market size</div>
+              <div className="metric-card" style={{ animationDelay: '100ms' }}>
+                <div className="metric-icon">📊</div>
+                <div className="metric-label">Market Size</div>
                 <div className="metric-value">{overview.marketSize || '—'}</div>
                 {market && <div className="metric-sub">{market.growthRate}</div>}
               </div>
 
-              <div className="metric-card">
+              <div className="metric-card" style={{ animationDelay: '200ms' }}>
+                <div className="metric-icon">⚔</div>
                 <div className="metric-label">Competition</div>
                 <div className="metric-value">{overview.competition || '—'}</div>
                 {competition && (
-                  <div className="metric-sub">{(competition.directCompetitors || []).length} direct</div>
+                  <div className="metric-sub">
+                    {(competition.directCompetitors || []).length} direct rivals
+                  </div>
                 )}
               </div>
 
-              <div className="metric-card">
+              <div className="metric-card" style={{ animationDelay: '300ms' }}>
+                <div className="metric-icon">🎯</div>
                 <div className="metric-label">Recommendation</div>
                 {(() => {
                   const rec = (overview.recommendation || '').toLowerCase();
                   return (
                     <div className={`rec-badge ${recClass[rec] || 'rec-proceed'}`}>
-                      {recIcon[rec] || '↑'} {rec.toUpperCase()}
+                      <span className="rec-icon">{recIcon[rec] || '↑'}</span>
+                      <span>{recLabel[rec] || rec.toUpperCase()}</span>
                     </div>
                   );
                 })()}
@@ -627,9 +798,9 @@ function App() {
             </div>
 
             {/* Overview */}
-            <SectionCard title="Overview & Reasoning">
+            <SectionCard title="Overview & Reasoning" accent="#1D9E75" delay={0}>
               <p className="reasoning-text">{overview.reasoning}</p>
-              <div style={{ borderTop: '0.5px solid var(--border)' }}>
+              <div className="kv-divider">
                 <KVRow label="Target customer" value={overview.targetCustomer} />
                 <KVRow label="Main risk"       value={overview.mainRisk} />
               </div>
@@ -639,35 +810,41 @@ function App() {
             {(market || competition) && (
               <div className="two-col">
                 {market && (
-                  <SectionCard title="Market">
+                  <SectionCard title="Market Analysis" accent="#378ADD" delay={100}>
                     <KVRow label="TAM estimate" value={market.tamEstimate} />
                     <KVRow label="Growth rate"  value={market.growthRate} />
                     <KVRow label="Demographics" value={market.targetDemographics} />
-                    <div style={{ marginTop: 12 }}>
+                    <div className="tags-section">
                       <div className="sub-label">Key trends</div>
                       <div className="tag-list">
-                        {(market.keyTrends || []).map((t, i) => <Tag key={i} variant="blue">{t}</Tag>)}
+                        {(market.keyTrends || []).map((t, i) => (
+                          <Tag key={i} variant="blue" delay={i * 50}>{t}</Tag>
+                        ))}
                       </div>
                     </div>
                   </SectionCard>
                 )}
                 {competition && (
-                  <SectionCard title="Competition">
-                    <div style={{ marginBottom: 12 }}>
-                      <div className="sub-label">Direct</div>
+                  <SectionCard title="Competition" accent="#D85A30" delay={150}>
+                    <div className="tags-section">
+                      <div className="sub-label">Direct rivals</div>
                       <div className="tag-list">
-                        {(competition.directCompetitors || []).map((c, i) => <Tag key={i} variant="coral">{c}</Tag>)}
+                        {(competition.directCompetitors || []).map((c, i) => (
+                          <Tag key={i} variant="coral" delay={i * 50}>{c}</Tag>
+                        ))}
                       </div>
                     </div>
-                    <div style={{ marginBottom: 12 }}>
-                      <div className="sub-label">Indirect</div>
+                    <div className="tags-section">
+                      <div className="sub-label">Indirect rivals</div>
                       <div className="tag-list">
-                        {(competition.indirectCompetitors || []).map((c, i) => <Tag key={i}>{c}</Tag>)}
+                        {(competition.indirectCompetitors || []).map((c, i) => (
+                          <Tag key={i} delay={i * 50}>{c}</Tag>
+                        ))}
                       </div>
                     </div>
-                    <div style={{ borderTop: '0.5px solid var(--border)' }}>
-                      <KVRow label="Edge"     value={competition.differentiation} />
-                      <KVRow label="Barriers" value={competition.barriers} />
+                    <div className="kv-divider">
+                      <KVRow label="Your edge"  value={competition.differentiation} />
+                      <KVRow label="Barriers"   value={competition.barriers} />
                     </div>
                   </SectionCard>
                 )}
@@ -676,17 +853,19 @@ function App() {
 
             {/* Business Model */}
             {business && (
-              <SectionCard title="Business Model">
+              <SectionCard title="Business Model" accent="#1D9E75" delay={200}>
                 <div className="two-col">
                   <div>
                     <KVRow label="Pricing"       value={business.pricing} />
                     <KVRow label="Scalability"   value={business.scalability} />
                     <KVRow label="Profitability" value={business.profitabilityTimeline} />
                   </div>
-                  <div>
+                  <div className="tags-section">
                     <div className="sub-label">Revenue streams</div>
-                    <div className="tag-list" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                      {(business.revenueStreams || []).map((s, i) => <Tag key={i} variant="teal">{s}</Tag>)}
+                    <div className="tag-list tag-list--col">
+                      {(business.revenueStreams || []).map((s, i) => (
+                        <Tag key={i} variant="teal" delay={i * 60}>{s}</Tag>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -695,38 +874,47 @@ function App() {
 
             {/* Risks */}
             {risks && (
-              <SectionCard title="Risk Assessment">
-                {risks.map((r, i) => {
-                  const sevPct   = { low: 30, medium: 65, high: 100 }[(r.severity || 'medium').toLowerCase()] || 65;
-                  const sevColor = { low: '#7ab83a', medium: '#BA7517', high: '#E24B4A' }[(r.severity || 'medium').toLowerCase()] || '#BA7517';
-                  return (
-                    <div key={i} className="risk-item">
-                      <div className="risk-header">
-                        <span className="risk-name">{r.risk}</span>
-                        <SeverityBadge level={r.severity} />
-                      </div>
-                      <div className="risk-bar-wrap">
-                        <div className="risk-bar-bg">
-                          <div className="risk-bar-fill" style={{ width: `${sevPct}%`, background: sevColor }} />
-                        </div>
-                      </div>
-                      <div className="risk-mitigation">
-                        <span className="mit-label">MITIGATION </span>
-                        {r.mitigation}
-                      </div>
+              <SectionCard title="Risk Assessment" accent="#E24B4A" delay={250}>
+                {risks.map((r, i) => (
+                  <div key={i} className="risk-item risk-item-animate" style={{ animationDelay: `${i * 100}ms` }}>
+                    <div className="risk-header">
+                      <span className="risk-num">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="risk-name">{r.risk}</span>
+                      <SeverityBadge level={r.severity} />
                     </div>
-                  );
-                })}
+                    <div className="risk-bar-wrap">
+                      <RiskMeter severity={r.severity} />
+                    </div>
+                    <div className="risk-mitigation">
+                      <span className="mit-label">MITIGATION </span>
+                      {r.mitigation}
+                    </div>
+                  </div>
+                ))}
               </SectionCard>
             )}
 
-            {/* Download PDF Button */}
-            <div>
+            {/* Download */}
+            <div className="download-row">
               <button
                 className="save-btn"
                 onClick={() => generatePDF(idea, analysis)}
               >
-                Download PDF Report ↓
+                <span className="save-icon">↓</span>
+                <span>Download PDF Report</span>
+                <span className="save-sparkle">✦</span>
+              </button>
+              <button
+                className="reset-btn"
+                onClick={() => {
+                  setAnalysis(null);
+                  setLogs([]);
+                  setIdea('');
+                  setCharCount(0);
+                  setPhases({ p1: 'idle', p2: 'idle', p3: 'idle', p4: 'idle', p5: 'idle' });
+                }}
+              >
+                New Analysis ↺
               </button>
             </div>
 
