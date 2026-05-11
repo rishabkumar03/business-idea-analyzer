@@ -4,7 +4,6 @@ const ollama = new Ollama();
 const fs = require('fs');
 
 // --------- CONFIGURATION ---------
-
 const CONFIG = {
     // swap to 'llama3' or 'gemma', if needed. These two are other models of ollama
     model: 'mistral',
@@ -38,7 +37,6 @@ const CONFIG = {
 }
 
 // --------- PROMPT BUILDER ---------
-
 function buildPrompt(idea) {
     return `Your are a seasoned business analyst who has evaluated over 500 startup ideas. You combine data-driven analysis with practical market insights.
     
@@ -116,7 +114,6 @@ JSON: `
 }
 
 // --------- ERROR HANDLING ---------
-
 class AnalysisError extends Error {
     constructor(message, type, canRetry = false) {
         super(message);
@@ -160,12 +157,12 @@ function identifyError(error) {
 }
 
 // --------- JSON PARSING ---------
-
 function parseJSON(text) {
 
     // Clean the response - remove markdown and extra text
     const cleaned = text
-        // replaces three backticks as well as word 'json', replaces optional newline also and /g represents global replacement. Finally '' means replace with nothing.
+
+        // replaces three backticks as well as word 'json', replaces optional newline also and /g represents global replacement. Finally '' means replace to nothing.
         .replace(/```json\n?/g, '') 
 
         // same here, replacement of only three backticks
@@ -190,7 +187,6 @@ function parseJSON(text) {
 }
 
 // --------- TIMEOUT HANDLER ---------
-
 function createTimeoutPromise(ms) {
     return new Promise((_, reject) => {
         setTimeout(() => 
@@ -199,7 +195,6 @@ function createTimeoutPromise(ms) {
 }
 
 // --------- RETRY LOGIC ---------
-
 async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -228,7 +223,6 @@ async function executeWithRetry(fn, maxRetries = CONFIG.maxRetries) {
 }
 
 // --------- SINGLE REQUEST FUNCTION ---------
-
 async function makeSingleRequest(prompt, description) {
     console.log(`Analyzing ${description}...`);
     
@@ -255,13 +249,13 @@ async function makeSingleRequest(prompt, description) {
 }
 
 // --------- PROGRESSIVE ANALYZER ---------
-
 async function analyzeBusinessIdea(idea) {
     console.log('\n Starting Business Idea Analysis... \n');
     console.log(`Idea: "${idea}"\n`);
     console.log('-'.repeat(30));
 
     try {
+
         // Step 1: Quick overview (fast, gives immediate feedback)
         console.log('\n Phase 1: Quick Overview');
         const quickPrompt = buildPrompt(idea);
@@ -336,64 +330,9 @@ async function analyzeBusinessIdea(idea) {
 
         throw analysisError;
     }
-}
-
-// function displayAnalysis(analysis) {
-//     console.log("--------- ANALYSIS REPORT ---------");
-
-//     // Viability Score
-//     const ov = analysis.overview;
-//     console.log(`VIABILITY SCORE: ${ov.score}/10`);
-//     console.log(`RECOMMENDATION: ${ov.recommendation}`);
-//     console.log(`\n ${ov.reasoning}`);
-    
-//     console.log('-'.repeat(30));
-//     console.log('TARGET CUSTOMER');
-//     console.log('-'.repeat(30));
-//     console.log(ov.targetCustomer + '\n');
-
-//     // Market (if available)
-//     if (analysis.market) {
-//         console.log('-'.repeat(60));
-//         console.log('MARKET');
-//         console.log('-'.repeat(60));
-//         console.log(`Size: ${analysis.market.tamEstimate}`);
-//         console.log(`Growth: ${analysis.market.growthRate}`);
-//         console.log(`Demographics: ${analysis.market.targetDemographics}\n`);
-//     }
-
-//     // Competition
-//     if (analysis.competition) {
-//         console.log('-'.repeat(30));
-//         console.log('COMPETITION');
-//         console.log('-'.repeat(30));
-//         console.log(`Direct: ${analysis.competition.directCompetitors.join(', ')}`);
-//         console.log(`Edge: ${analysis.competition.differentiation}\n`);
-//     }
-
-//     // Business Model
-//     if (analysis.businessModel) {
-//         console.log('-'.repeat(30));
-//         console.log('BUSINESS MODEL');
-//         console.log('-'.repeat(30));
-//         console.log(`Revenue: ${analysis.businessModel.revenueStreams.join(', ')}`);
-//         console.log(`Pricing: ${analysis.businessModel.pricing}\n`);
-//     }
-
-//     // Risks
-//     console.log('-'.repeat(30));
-//     console.log('TOP RISKS');
-//     console.log('-'.repeat(30));
-//     analysis.risks.forEach((r, i) => {
-//         console.log(`${i + 1}. [${r.severity.toUpperCase()}] ${r.risk}`);
-//         console.log(`Fix: ${r.mitigation}\n`);
-//     });
-
-//     console.log('='.repeat(30) + '\n');
-// }  
+} 
 
 // --------- FILE OPTIONS ---------
-
 function saveAnalysis(idea, analysis) {
 
     // This will create timestamp: "2026-03-23T14-20-20-123Z"
@@ -417,7 +356,6 @@ function saveAnalysis(idea, analysis) {
 }
 
 // --------- EXPORTS ---------
-
 module.exports = {
     analyzeBusinessIdea, 
     saveAnalysis,
@@ -426,7 +364,6 @@ module.exports = {
 };
 
 // --------- MAIN ENTRY POINT ---------
-
 if (require.main === module) {
     const idea = process.argv[2] || "A platform connecting freelance developers with equity-based startup projects"
 

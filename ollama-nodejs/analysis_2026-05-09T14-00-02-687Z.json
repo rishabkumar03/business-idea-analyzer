@@ -1,0 +1,66 @@
+{
+  "idea": "I want to open an event management company in ranchi and the client can order anything related to event online via mobile app/website",
+  "analyzedAt": "2026-05-09T14:00:02.688Z",
+  "analysis": {
+    "overview": {
+      "score": 7,
+      "marketSize": "medium",
+      "competition": "medium",
+      "targetCustomer": "Local businesses, organizations, and individuals planning events in Ranchi",
+      "mainRisk": "High competition from established event management companies in the region",
+      "recommendation": "Modify",
+      "reasoning": "While there is a moderate market size for event management services in Ranchi, the competition level is medium. To succeed, it's crucial to differentiate your business by offering unique value propositions such as competitive pricing, innovative technology integration, or specialized event types. The high competition necessitates refining the idea and identifying a niche within the market."
+    },
+    "market": {
+      "tamEstimate": "The Total Addressable Market (TAM) for event management services in Ranchi can be estimated around INR 50 crores to INR 100 crores annually. This estimate is based on the potential number of events that could occur in a year and the average spend per event.",
+      "growthRate": "The growth rate for this market is projected at approximately 20% over the next five years, due to increasing demand for professional event management services and growing awareness about digital solutions.",
+      "keyTrends": [
+        "Digitalization of event planning processes",
+        "Rising popularity of experiential marketing events",
+        "Increased focus on sustainability in event management"
+      ],
+      "targetDemographics": "The primary target demographic for this business would be businesses, organizations, and individuals aged 25-45 years old with a disposable income above INR 1 lakh per annum. The location remains Ranchi and its surrounding areas."
+    },
+    "competition": {
+      "directCompetitors": [
+        "Event capital Ranchi",
+        "Ranchi Events Organizer",
+        "Starry Night Event Management Ranchi"
+      ],
+      "indirectCompetitors": [
+        "Online ticket booking platforms like BookMyShow, Paytm, and Ticketgenie for event ticketing",
+        "Local wedding planners offering online services",
+        "Restaurants or venues that offer event management services online"
+      ],
+      "differentiation": "Offering a one-stop solution for all event-related needs via mobile app/website, providing customizable packages and seamless user experience.",
+      "barriers": "High initial investment in technology development, marketing expenses to gain traction, competition from established players, regulatory barriers (if any) related to event management companies"
+    },
+    "businessModel": {
+      "revenueStreams": [
+        "Subscription fees for mobile app/website usage, Event planning and management fees, Commission from third-party vendors (if any)"
+      ],
+      "pricing": "Monthly subscription fees for the app/website usage could range between Rs.500 to Rs.2000 per month, event planning and management fees would vary based on the scale and complexity of events",
+      "scalability": "Medium (with potential for high scalability as business grows)",
+      "profitabilityTimeline": "6-12 months to profitability assuming initial investment in technology development, marketing, and operational setup"
+    },
+    "risks": [
+      {
+        "risk": "Cybersecurity Risks",
+        "severity": "High",
+        "mitigation": "Implement strong security measures such as encryption, firewalls, and multi-factor authentication to protect sensitive customer data."
+      },
+      {
+        "risk": "Market Competition",
+        "severity": "Medium",
+        "mitigation": "Conduct thorough market research, offer competitive pricing, and provide exceptional service to attract clients."
+      },
+      {
+        "risk": "Technical Issues",
+        "severity": "High",
+        "mitigation": "Regularly test the mobile app/website for bugs and usability issues. Have a backup plan in case of technical failures during events."
+      }
+    ],
+    "analyzedAt": "2026-05-09T14:00:02.687Z",
+    "idea": "I want to open an event management company in ranchi and the client can order anything related to event online via mobile app/website"
+  }
+}

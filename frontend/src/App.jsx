@@ -766,14 +766,12 @@ function App() {
               </div>
 
               <div className="metric-card" style={{ animationDelay: '100ms' }}>
-                <div className="metric-icon">📊</div>
                 <div className="metric-label">Market Size</div>
                 <div className="metric-value">{overview.marketSize || '—'}</div>
                 {market && <div className="metric-sub">{market.growthRate}</div>}
               </div>
 
               <div className="metric-card" style={{ animationDelay: '200ms' }}>
-                <div className="metric-icon">⚔</div>
                 <div className="metric-label">Competition</div>
                 <div className="metric-value">{overview.competition || '—'}</div>
                 {competition && (
@@ -784,7 +782,6 @@ function App() {
               </div>
 
               <div className="metric-card" style={{ animationDelay: '300ms' }}>
-                <div className="metric-icon">🎯</div>
                 <div className="metric-label">Recommendation</div>
                 {(() => {
                   const rec = (overview.recommendation || '').toLowerCase();
